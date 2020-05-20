@@ -48,8 +48,7 @@ public class Compressor {
 	
 	public static File zipFiles(File[] files) {
 		HashMap<File, byte[]> inputMap = readFiles(files);
-		FileOutputStream fos = null;
-		ObjectOutputStream oos = null;
+		
 		
 		//create a random file name
 		SimpleDateFormat simpleDateFormat;
@@ -59,9 +58,7 @@ public class Compressor {
 		Random random = new Random();
 		int num = (int) (random.nextDouble() * (99999 - 10000 + 1)) + 10000;
 		File file = new File(files[0].getParent()+ "\\"+num+str+".hzip");
-		try {
-			fos = new FileOutputStream(file);
-			oos = new ObjectOutputStream(fos);
+		try (FileOutputStream fos = new FileOutputStream(file);ObjectOutputStream oos =new ObjectOutputStream(fos) ) {
 			for (Map.Entry<File, byte[]> entry : inputMap.entrySet()) {
 				Huffman huffman = new Huffman();
 				byte[] zipBytes = huffman.huffmanZip(entry.getValue());
@@ -71,89 +68,34 @@ public class Compressor {
 			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		} finally {
-
-			try {
-				oos.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			try {
-				fos.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		} 
 		return file;
 	}
 	
 	private static void outputUnzipFiles(File directory,String name, Map<Byte, String> huffmanCodes, byte[] zipbytes) {
-		FileOutputStream fos = null;
-		try {
-			fos = new FileOutputStream(directory+"\\"+name);
+		try (FileOutputStream fos = new FileOutputStream(directory+"\\"+name)){
 			Huffman huffman = new Huffman();
 			byte[] resBytes =huffman.unzip(huffmanCodes, zipbytes);
 			fos.write(resBytes);
 					
 		}catch (Exception e) {
 			System.out.println(e.getMessage());
-		} finally {
-			try {
-				fos.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
-		
-		
-		
 	}
 
 	@SuppressWarnings("unchecked")
 	public static void unzipFiles(File file) {
-		FileInputStream fis = null;
-		ObjectInputStream ois = null;
 		File directory = new File(file.getParent());
-		try {
-			fis = new FileInputStream(file);
-			ois = new ObjectInputStream(fis);
+		try (FileInputStream fis = new FileInputStream(file); ObjectInputStream ois = new ObjectInputStream(fis)) {
 			Object obj = null;
 			while((obj=ois.readObject())!=null) {
 				if(obj instanceof String) {
 					outputUnzipFiles(directory,(String)obj,(Map<Byte, String>)ois.readObject(),(byte[])ois.readObject());
 				}
 			}
-			
-			
-//			String name = (String)ois.readObject();
-//			Map<Byte, String> codes = (Map<Byte, String>) ois.readObject();
-//			byte[] zipBytes = (byte[])ois.readObject();
-//			System.out.println(name);
-//			codes.entrySet().forEach(entry->{
-//			    System.out.println(entry.getKey() + " " + entry.getValue());  
-//			 });
-//			Huffman huffman = new Huffman();
-//			byte[] resBytes =huffman.unzip(codes, zipBytes);
-//			System.out.println(new String(resBytes));
-
-			
-			
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		} finally {
-			try {
-				ois.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			try {
-				fis.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		} 
 
 	}
 

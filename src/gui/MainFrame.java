@@ -14,6 +14,15 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
+import Utils.Compressor;
+
+/**
+ * 
+ * @ClassName: MainFrame
+ * @Description: main GUI frame
+ * @author Xu
+ * @date 2020-06-08 10:21:20
+ */
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private TextPanel textPanel;
@@ -50,6 +59,14 @@ public class MainFrame extends JFrame {
 
 	}
 
+	/**
+	 * 
+	 * @Title: createMenuBar
+	 * @Description: menu bar
+	 * @return
+	 * @author Xu
+	 * @date 2020-06-08 10:21:31
+	 */
 	private JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 
@@ -76,7 +93,7 @@ public class MainFrame extends JFrame {
 		exportDataItem.addActionListener(e -> {
 			action(1);
 		});
-		
+
 		// action for exitItem
 		exitItem.addActionListener(e -> {
 			int action = JOptionPane.showConfirmDialog(MainFrame.this, "Do you really want to exit the application?",
@@ -90,13 +107,13 @@ public class MainFrame extends JFrame {
 		JMenu windowMenu = new JMenu("Window");
 		JMenu recent = new JMenu("Recent");
 		JMenuItem help = new JMenuItem("Help");
-		
-		help.addActionListener(e->{
-			   try {
-			        Desktop.getDesktop().browse(new URL("https://github.com/jiangxu525").toURI());
-			    } catch (Exception exception) {
-			    	exception.printStackTrace();
-			    }
+
+		help.addActionListener(e -> {
+			try {
+				Desktop.getDesktop().browse(new URL("https://github.com/jiangxu525").toURI());
+			} catch (Exception exception) {
+				exception.printStackTrace();
+			}
 		});
 
 		windowMenu.add(recent);
@@ -108,32 +125,38 @@ public class MainFrame extends JFrame {
 
 		return menuBar;
 	}
-	/*
+
+	/**
+	 * 
+	 * @Title: action
+	 * @Description: eventType = 0 --> choose file , eventType = 1 --> zip file to,
+	 *               eventType = 2 --> unzip file to
 	 * @param eventType
-	 * eventType = 0 --> choose file
-	 * eventType = 1 --> zip file to
-	 * eventType = 2 --> unzip file to
+	 * @author Xu
+	 * @date 2020-06-08 10:21:42
 	 */
+
 	private void action(int eventType) {
 		if (eventType == 0) {
 			if (zipFiles.showOpenDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
 				File[] files = zipFiles.getSelectedFiles();
-				for(File file : files) {
+				for (File file : files) {
 					textPanel.appendText(file.toString());
 				}
 				formPanel.getChooseFileField().setText(Compressor.zipFiles(files).getAbsolutePath());
-				textPanel.appendText("***********************************Files have been zipped successfully***********************************");
+				textPanel.appendText(
+						"***********************************Files have been zipped successfully***********************************");
 			}
 		}
 		if (eventType == 1) {
-				if (unzipFile.showOpenDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
-					File file = unzipFile.getSelectedFile();
-					formPanel.getSaveFileField().setText(unzipFile.getSelectedFile().toString());
-					textPanel.appendText(unzipFile.getSelectedFile().toString());
-					Compressor.unzipFiles(file);
-					textPanel.appendText("*****Files have been zipped in the folder successfully*****");
-				}
+			if (unzipFile.showOpenDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
+				File file = unzipFile.getSelectedFile();
+				formPanel.getSaveFileField().setText(unzipFile.getSelectedFile().toString());
+				textPanel.appendText(unzipFile.getSelectedFile().toString());
+				Compressor.unzipFiles(file);
+				textPanel.appendText("*****Files have been zipped in the folder successfully*****");
+			}
 		}
-		
+
 	}
 }

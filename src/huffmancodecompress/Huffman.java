@@ -6,17 +6,43 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 
+ * @ClassName: Huffman
+ * @Description: Huffman algorithm
+ * @author Xu
+ * @date 2020-06-08 10:16:16
+ */
 public class Huffman {
+	/**
+	 * store the huffman codes
+	 */
 	private Map<Byte, String> huffmanCodes;
+	/**
+	 * temporarily store the byte
+	 */
 	private StringBuilder stringBuilder;
 
+	/**
+	 * 
+	 * @Title: Huffman
+	 * @Description: Huffman
+	 * @author Xu
+	 * @date 2020-06-08 10:17:13
+	 */
 	public Huffman() {
 		huffmanCodes = new HashMap<>();
 		stringBuilder = new StringBuilder();
 	}
 
-	/*
-	 * @param bytes original byte[] return the compressed byte[]
+	/**
+	 * 
+	 * @Title: huffmanZip
+	 * @Description: convert the original byte[] to compressed byte[]
+	 * @param bytes
+	 * @return the compressed byte[]
+	 * @author Xu
+	 * @date 2020-06-08 10:17:18
 	 */
 
 	public byte[] huffmanZip(byte[] bytes) {
@@ -26,7 +52,16 @@ public class Huffman {
 		return zip(bytes, huffmanCodes);
 	}
 
-	// zip the byte[]
+	/**
+	 * 
+	 * @Title: zip
+	 * @Description: zip the byte[]
+	 * @param bytes
+	 * @param huffmanCodes
+	 * @return the zipped byte[]
+	 * @author Xu
+	 * @date 2020-06-08 10:17:49
+	 */
 	private byte[] zip(byte[] bytes, Map<Byte, String> huffmanCodes) {
 		StringBuilder sb = new StringBuilder();
 		for (byte b : bytes) {
@@ -47,8 +82,15 @@ public class Huffman {
 		}
 		return huffmanBytes;
 	}
-
-	// creating huffmanCodes
+/**
+ * 
+ * @Title: getCodes
+ * @Description: creating huffmanCodes
+ * @param root
+ * @return the huffman codes
+ * @author Xu
+ * @date 2020-06-08 10:18:08
+ */
 	private Map<Byte, String> getCodes(Node root) {
 		if (root == null) {
 			return null;
@@ -57,8 +99,16 @@ public class Huffman {
 		getCodes(root.right, "1", stringBuilder);
 		return huffmanCodes;
 	}
-
-	// creating huffmanCodes
+/**
+ * 
+ * @Title: getCodes
+ * @Description: helper function to create huffman codes
+ * @param node
+ * @param code
+ * @param sb
+ * @author Xu
+ * @date 2020-06-08 10:18:26
+ */
 	private void getCodes(Node node, String code, StringBuilder sb) {
 		StringBuilder sb2 = new StringBuilder(sb);
 		sb2.append(code);
@@ -71,8 +121,15 @@ public class Huffman {
 			}
 		}
 	}
-
-	// create nodes
+/**
+ * 
+ * @Title: getNodes
+ * @Description: create nodes
+ * @param bytes
+ * @return the list of nodes
+ * @author Xu
+ * @date 2020-06-08 10:18:57
+ */
 	private List<Node> getNodes(byte[] bytes) {
 		List<Node> nodes = new ArrayList<>();
 		HashMap<Byte, Integer> map = new HashMap<>();
@@ -90,8 +147,15 @@ public class Huffman {
 		}
 		return nodes;
 	}
-
-	// create HuffmanTree
+/**
+ * 
+ * @Title: createHuffmanTree
+ * @Description: create Huffman Tree
+ * @param nodes
+ * @return the Huffman Tree
+ * @author Xu
+ * @date 2020-06-08 10:19:10
+ */
 	private Node createHuffmanTree(List<Node> nodes) {
 		while (nodes.size() > 1) {
 			Collections.sort(nodes);
@@ -114,14 +178,17 @@ public class Huffman {
 	public void setHuffmanCodes(Map<Byte, String> huffmanCodes) {
 		this.huffmanCodes = huffmanCodes;
 	}
+/**
+ * 
+ * @Title: bytesToBitString
+ * @Description: covert a byte to binary string
+ * @param flag: last byte or not false
+ * @param b
+ * @return binary string to represent a byte
+ * @author Xu
+ * @date 2020-06-08 10:19:31
+ */
 
-	/*
-	 * covert a byte to binary string
-	 * 
-	 * @param flag: last byte or not false: last byte
-	 * 
-	 * @return binary string to represent a byte
-	 */
 	private String bytesToBitString(boolean flag, byte b) {
 		int temp = b;
 		if (flag) {
@@ -134,7 +201,16 @@ public class Huffman {
 			return str;
 		}
 	}
-
+/**
+ * 
+ * @Title: unzip
+ * @Description: convert the huffmanBytes to unzipped byte[]
+ * @param huffmanCodes
+ * @param huffmanBytes
+ * @return unzipped byte[]
+ * @author Xu
+ * @date 2020-06-08 10:20:11
+ */
 	public byte[] unzip(Map<Byte, String> huffmanCodes, byte[] huffmanBytes) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < huffmanBytes.length; i++) {
@@ -148,14 +224,14 @@ public class Huffman {
 
 		List<Byte> list = new ArrayList<Byte>();
 
-		for (int i = 0; i < sb.length()-1;) {
+		for (int i = 0; i < sb.length() - 1;) {
 			int count = 1;
 			boolean flag = true;
 			Byte b = null;
 			while (flag) {
 				String key = sb.substring(i, i + count);
 				b = map.get(key);
-				if (b == null ) {
+				if (b == null) {
 					count++;
 				} else {
 					flag = false;
